@@ -1,8 +1,13 @@
-FROM alpine:3.10
+FROM haskell:9.0.1-buster
 
-# TODO: install packages required to run the tests
-# RUN apk add --no-cache coreutils
+# RUN stack install hspec
+
+# ENV STACK_ROOT=/tmp/.stack
 
 WORKDIR /opt/test-runner
+
+# COPY stack.yaml .
+# RUN stack setup --verbose
+
 COPY . .
 ENTRYPOINT ["/opt/test-runner/bin/run.sh"]
