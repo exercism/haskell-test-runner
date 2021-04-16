@@ -4,8 +4,3 @@ version: 1.6.0.10
 dependencies:
   - base
   - hspec
-
-library:
-  exposed-modules: LeapYear
-  source-dirs: src
-  ghc-options: -Wall

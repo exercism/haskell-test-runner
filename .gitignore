@@ -1,3 +1,4 @@
 tests/**/results.json
 tests/**/*.cabal
 tests/**/.stack-work
+tests/**/stack.yaml.lock
