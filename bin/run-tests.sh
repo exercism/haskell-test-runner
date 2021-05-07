@@ -26,6 +26,7 @@ for test_dir in tests/*; do
     sed -i -E \
       -e 's/Randomized with seed [0-9]+//' \
       -e 's/Finished in [0-9]+\.[0-9]+ seconds//' \
+      -e 's/Completed [0-9]+ action\(s\)//' \
       -e "s~${test_dir_path}~/solution~g" \
       "${results_file_path}"
 
