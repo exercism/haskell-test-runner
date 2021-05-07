@@ -24,9 +24,9 @@ for test_dir in tests/*; do
 
     # Normalize the results file
     sed -i -E \
-      -e 's/Randomized with seed [0-9]+//' \
-      -e 's/Finished in [0-9]+\.[0-9]+ seconds//' \
-      -e 's/Completed [0-9]+ action\(s\)//' \
+      -e 's/Randomized with seed [0-9]+\\n//' \
+      -e 's/Finished in [0-9]+\.[0-9]+ seconds\\n//' \
+      -e 's/Completed [0-9]+ action\(s\).\\n//' \
       -e "s~${test_dir_path}~/solution~g" \
       "${results_file_path}"
 
