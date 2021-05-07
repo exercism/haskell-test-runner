@@ -1,6 +1,0 @@
-name: leap
-version: 1.6.0.10
-
-dependencies:
-  - base
-  - hspec
