@@ -46,13 +46,17 @@ if [ $exit_code -eq 0 ]; then
     jq -n '{version: 1, status: "pass"}' > ${results_file}
 else
     # Sanitize the output
-    sanitized_test_output=$(printf "${test_output}" | sed -n -E -e '1,/^Building library for/!p')
+    if grep -q "Registering library for " <<< "${test_output}" ; then
+        sanitized_test_output=$(printf "${test_output}" | sed -n -E -e '1,/^Registering library for/!p')
+    elif grep -q "Building library for " <<< "${test_output}" ; then
+        sanitized_test_output=$(printf "${test_output}" | sed -n -E -e '1,/^Building library for/!p')
+    else
+        sanitized_test_output="${test_output}"
+    fi
 
     # Manually add colors to the output to help scanning the output for errors
     colorized_test_output=$(echo "${sanitized_test_output}" \
          | GREP_COLOR='01;31' grep --color=always -E -e '.*FAILED \[[0-9]+\]$|$')
-
-    printf "${colorized_test_output}"    
 
     jq -n --arg output "${colorized_test_output}" '{version: 1, status: "fail", output: $output}' > ${results_file}
 fi
