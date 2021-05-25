@@ -58,7 +58,7 @@ else
     colorized_test_output=$(echo "${sanitized_test_output}" \
          | GREP_COLOR='01;31' grep --color=always -E -e '.*FAILED \[[0-9]+\]$|$')
 
-    jq -n --arg output "${colorized_test_output}" '{version: 1, status: "fail", output: $output}' > ${results_file}
+    jq -n --arg output "${colorized_test_output}" '{version: 1, status: "fail", message: $output}' > ${results_file}
 fi
 
 echo "${slug}: done"
