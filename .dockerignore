@@ -2,3 +2,8 @@
 .github/
 .stack-work/
 tests/
+.appends
+.gitignore
+.gitattributes
+.dockerignore
+Dockerfile
