@@ -8,9 +8,14 @@ library:
   exposed-modules: LeapYear
   source-dirs: src
   ghc-options: -Wall
-  # dependencies:
-  # - foo       # List here the packages you
-  # - bar       # want to use in your solution.
+  dependencies:
+    - QuickCheck
+    - lens
+    - parallel
+    - vector
+    - split
+    - random
+    - string-conversions
 
 tests:
   test:
