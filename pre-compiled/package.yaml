@@ -17,6 +17,8 @@ library:
     - random
     - string-conversions
     - text
+    - attoparsec
+    - megaparsec
 
 tests:
   test:
