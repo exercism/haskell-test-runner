@@ -19,6 +19,7 @@ library:
     - text
     - attoparsec
     - megaparsec
+    - multiset
 
 tests:
   test:
