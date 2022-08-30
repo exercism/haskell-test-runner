@@ -21,6 +21,7 @@ library:
     - megaparsec
     - multiset
     - regex-tdfa
+    - extra
 
 tests:
   test:
