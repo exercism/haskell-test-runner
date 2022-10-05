@@ -1,5 +1,5 @@
 {
   "version": 1,
   "status": "fail",
-  "message": "leap> test (suite: test)\n\n\nisLeapYear\n\u001b[01;31m\u001b[K  2015 - year not divisible by 4 in common year FAILED [1]\u001b[m\u001b[K\n\nFailures:\n\n  test/Tests.hs:20:23: \n  1) isLeapYear 2015 - year not divisible by 4 in common year\n       expected: False\n        but got: True\n\n  To rerun use: --match \"/isLeapYear/2015 - year not divisible by 4 in common year/\"\n\n\n1 example, 1 failure\n\nleap> Test suite test failed\nTest suite failure for package leap-1.6.0.10\n    test:  exited with: ExitFailure 1\nLogs printed to console"
+  "message": "leap> test (suite: test)\n\n\nisLeapYear\n\u001b[01;31m\u001b[K  2015 - year not divisible by 4 in common year FAILED [1]\u001b[m\u001b[K\n\nFailures:\n\n  test/Tests.hs:20:55: \n  1) isLeapYear 2015 - year not divisible by 4 in common year\n       expected: False\n        but got: True\n\n  To rerun use: --match \"/isLeapYear/2015 - year not divisible by 4 in common year/\"\n\n\n1 example, 1 failure\n\nleap> Test suite test failed\nTest suite failure for package leap-1.6.0.10\n    test:  exited with: ExitFailure 1\nLogs printed to console"
 }

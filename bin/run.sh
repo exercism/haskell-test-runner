@@ -35,7 +35,7 @@ pushd "${input_dir}" > /dev/null
 
 # Run the tests for the provided implementation file and redirect stdout and
 # stderr to capture it
-test_output=$(stack build --resolver lts-16.21 --test --allow-different-user 2>&1)
+test_output=$(stack build --resolver lts-19.27 --test --allow-different-user 2>&1)
 exit_code=$?
 
 popd
