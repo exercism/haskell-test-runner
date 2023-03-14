@@ -22,6 +22,7 @@ library:
     - multiset
     - regex-tdfa
     - extra
+    - safe
 
 tests:
   test:
