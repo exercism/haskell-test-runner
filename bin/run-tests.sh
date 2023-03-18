@@ -15,6 +15,13 @@ set -euo pipefail
 
 exit_code=0
 
+# The following is for making sure the sed command works on MacOS, too.
+sedi=(-i)
+case "$(uname)" in
+  # For macOS, use two parameters
+  Darwin*) sedi=(-i "")
+esac
+
 # Iterate over all test directories
 for test_dir in tests/*; do
     test_dir_name=$(basename "${test_dir}")
@@ -25,7 +32,7 @@ for test_dir in tests/*; do
     bin/run.sh "${test_dir_name}" "${test_dir_path}" "${test_dir_path}"
 
     # Normalize the results file
-    sed -i -E \
+    sed "${sedi[@]}" -E \
       -e 's/Randomized with seed [0-9]+\\n//' \
       -e 's/Finished in [0-9]+\.[0-9]+ seconds\\n//' \
       -e 's/Completed [0-9]+ action\(s\).\\n//' \
