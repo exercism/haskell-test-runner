@@ -23,6 +23,7 @@ library:
     - regex-tdfa
     - extra
     - safe
+    - stm
 
 tests:
   test:
