@@ -30,6 +30,8 @@ for test_dir in tests/*; do
       -e 's/Finished in [0-9]+\.[0-9]+ seconds\\n//' \
       -e 's/Completed [0-9]+ action\(s\).\\n//' \
       -e "s~${test_dir_path}~/solution~g" \
+      -e 's/--builddir[^ ]+ //' \
+      -e 's/\/opt\/test-runner\/.stack\/setup-exe-cache[^ ]+ //' \
       "${results_file_path}"
 
     # disable -e since we want all diffs even if one has unexpected
