@@ -41,7 +41,7 @@ set +e
 
 # Run the tests for the provided implementation file and redirect stdout and
 # stderr to capture it
-test_output=$(stack build --resolver lts-20.11 --test --allow-different-user 2>&1)
+test_output=$(stack build --resolver lts-20.18 --test --allow-different-user 2>&1)
 exit_code=$?
 
 # re-enable original options
