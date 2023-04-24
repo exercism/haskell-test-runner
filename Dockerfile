@@ -1,4 +1,4 @@
-FROM haskell:9.0.1-buster
+FROM haskell:9.2.7-buster
 
 RUN apt-get update && \
     apt-get install -y jq && \
