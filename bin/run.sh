@@ -15,6 +15,8 @@
 # Example:
 # ./bin/run.sh two-fer /absolute/path/to/two-fer/solution/folder/ /absolute/path/to/output/directory/
 
+set -euo pipefail
+
 # If any required arguments is missing, print the usage and exit
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
     echo "usage: ./bin/run.sh exercise-slug /absolute/path/to/two-fer/solution/folder/ /absolute/path/to/output/directory/"
@@ -33,10 +35,17 @@ echo "${slug}: testing..."
 
 pushd "${input_dir}" > /dev/null
 
+# disable -e since we expect some tests to fail
+old_opts=$-
+set +e
+
 # Run the tests for the provided implementation file and redirect stdout and
 # stderr to capture it
 test_output=$(stack build --resolver lts-19.27 --test --allow-different-user 2>&1)
 exit_code=$?
+
+# re-enable original options
+set -$old_opts
 
 popd
 
