@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Synopsis:
 # Test the test runner by running it against a predefined set of solutions 
@@ -10,6 +10,8 @@
 
 # Example:
 # ./bin/run-tests.sh
+
+set -euo pipefail
 
 exit_code=0
 
@@ -30,12 +32,20 @@ for test_dir in tests/*; do
       -e "s~${test_dir_path}~/solution~g" \
       "${results_file_path}"
 
+    # disable -e since we want all diffs even if one has unexpected
+    # results
+    old_opts=$-
+    set +e
+
     echo "${test_dir_name}: comparing results.json to expected_results.json"
     diff "${results_file_path}" "${expected_results_file_path}"
 
     if [ $? -ne 0 ]; then
         exit_code=1
     fi
+
+    # re-enable original options
+    set -$old_opts
 done
 
 exit ${exit_code}
