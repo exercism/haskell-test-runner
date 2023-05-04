@@ -13,7 +13,9 @@ ENV STACK_ROOT=/opt/test-runner/.stack
 WORKDIR /opt/test-runner/
 
 COPY pre-compiled/ .
-RUN stack build --resolver lts-20.18 --no-terminal --test --no-run-tests
+RUN stack build --resolver lts-20.18 --no-terminal --test --no-run-tests && \
+    rm -rf /opt/test-runner/.stack/programs/x86_64-linux/ghc-tinfo6-9.2.7/share \
+           /opt/test-runner/.stack/programs/x86_64-linux/ghc-tinfo6-9.2.7.tar.xz
 
 COPY . .
 ENTRYPOINT ["/opt/test-runner/bin/run.sh"]
