@@ -47,6 +47,9 @@ exit_code=$?
 # re-enable original options
 set -$old_opts
 
+# Remove the .stack-work directory, as its 40MB+ size fills up the test runner's disk
+rm -rf .stack-work 
+
 popd
 
 # Write the results.json file based on the exit code of the command that was 
