@@ -33,6 +33,10 @@ mkdir -p "${output_dir}"
 
 echo "${slug}: testing..."
 
+file_contents=$(< "${input_dir}/stack.yaml")
+
+echo "system-ghc: true" >> "${input_dir}/stack.yaml"
+
 pushd "${input_dir}" > /dev/null
 
 # disable -e since we expect some tests to fail
@@ -72,5 +76,7 @@ else
 
     jq -n --arg output "${colorized_test_output}" '{version: 1, status: "fail", message: $output}' > ${results_file}
 fi
+
+echo "$file_contents" > "${input_dir}/stack.yaml"
 
 echo "${slug}: done"
