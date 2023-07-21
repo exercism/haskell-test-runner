@@ -1,1 +1,3 @@
+system-ghc: true
+
 resolver: lts-20.18

@@ -1,4 +1,4 @@
-FROM haskell:9.2.7-buster
+FROM haskell:9.2.7-slim-buster
 
 RUN apt-get update && \
     apt-get install -y jq && \
@@ -15,3 +15,4 @@ RUN stack build --resolver lts-20.18 --no-terminal --test --no-run-tests
 
 COPY . .
 ENTRYPOINT ["/opt/test-runner/bin/run.sh"]
+
