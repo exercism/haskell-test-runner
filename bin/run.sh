@@ -37,6 +37,11 @@ file_contents=$(< "${input_dir}/stack.yaml")
 
 echo "system-ghc: true" >> "${input_dir}/stack.yaml"
 
+# Run our SetupTestFile which does some code injection to modify how the tests
+# will run to use our custom hspec formatter that outputs results.json automatically
+# TODO: see if we can avoid runghc and instead run a precompiled binary
+stack --resolver lts-20.18 runghc src/SetupTestFile.hs $input_dir
+
 pushd "${input_dir}" > /dev/null
 
 # disable -e since we expect some tests to fail
@@ -56,25 +61,23 @@ rm -rf .stack-work
 
 popd
 
-# Write the results.json file based on the exit code of the command that was 
-# just executed that tested the implementation file
-if [ $exit_code -eq 0 ]; then
-    jq -n '{version: 1, status: "pass"}' > ${results_file}
-else
+# If there is no existing results.json file it means that the tests failed to run
+# (usually this would be a compiler error)
+if ! [ -f ${results_file} ]; then
     # Sanitize the output
     if grep -q "Registering library for " <<< "${test_output}" ; then
-        sanitized_test_output=$(printf "${test_output}" | sed -n -E -e '1,/^Registering library for/!p')
+	sanitized_test_output=$(printf "${test_output}" | sed -n -E -e '1,/^Registering library for/!p')
     elif grep -q "Building library for " <<< "${test_output}" ; then
-        sanitized_test_output=$(printf "${test_output}" | sed -n -E -e '1,/^Building library for/!p')
+	sanitized_test_output=$(printf "${test_output}" | sed -n -E -e '1,/^Building library for/!p')
     else
-        sanitized_test_output="${test_output}"
+	sanitized_test_output="${test_output}"
     fi
 
     # Manually add colors to the output to help scanning the output for errors
     colorized_test_output=$(echo "${sanitized_test_output}" \
-         | GREP_COLOR='01;31' grep --color=always -E -e '.*FAILED \[[0-9]+\]$|$')
+	| GREP_COLOR='01;31' grep --color=always -E -e '.*FAILED \[[0-9]+\]$|$')
 
-    jq -n --arg output "${colorized_test_output}" '{version: 1, status: "fail", message: $output}' > ${results_file}
+    jq -n --arg output "${colorized_test_output}" '{version: 2, status: "error", message: $output}' > ${results_file}
 fi
 
 echo "$file_contents" > "${input_dir}/stack.yaml"
