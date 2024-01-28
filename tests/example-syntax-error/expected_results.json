@@ -1,5 +1,5 @@
 {
-  "version": 1,
-  "status": "fail",
-  "message": "\n/solution/src/LeapYear.hs:1:7: error: parse error on input ‘@#^&@#’\n  |\n1 | module@#^&@# LeapYear2341\n  |       ^^^^^^\n\nError: [S-7282]\n       Stack failed to execute the build plan.\n       \n       While executing the build plan, Stack encountered the following errors:\n       \n       [S-7011]\n       While building package leap-1.6.0.10 (scroll up to its section to see the error) using:\n       --verbose=1 build lib:leap test:test --ghc-options \"\"\n       Process exited with code: ExitFailure 1 "
+  "version": 2,
+  "status": "error",
+  "message": "\n/solution/src/LeapYear.hs:1:7: error: parse error on input ‘@#^&@#’\n  |\n1 | module@#^&@# LeapYear2341\n  |       ^^^^^^\n\nError: [S-7282]\n       Stack failed to execute the build plan.\n       \n       While executing the build plan, Stack encountered the error:\n       \n       [S-7011]\n       While building package leap-1.6.0.10 (scroll up to its section to see the error) using:\n       --verbose=1 build lib:leap test:test --ghc-options \"\"\n       Process exited with code: ExitFailure 1 "
 }

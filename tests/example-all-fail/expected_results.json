@@ -6,6 +6,46 @@
             "message": "Expected 'False' but got 'True'",
             "name": "2015 - year not divisible by 4 in common year",
             "status": "fail"
+        },
+        {
+            "message": "Expected 'False' but got 'True'",
+            "name": "1970 - year divisible by 2, not divisible by 4 in common year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'True' but got 'False'",
+            "name": "1996 - year divisible by 4, not divisible by 100 in leap year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'True' but got 'False'",
+            "name": "1960 - year divisible by 4 and 5 is still a leap year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'False' but got 'True'",
+            "name": "2100 - year divisible by 100, not divisible by 400 in common year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'False' but got 'True'",
+            "name": "1900 - year divisible by 100 but not by 3 is still not a leap year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'True' but got 'False'",
+            "name": "2000 - year divisible by 400 in leap year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'True' but got 'False'",
+            "name": "2400 - year divisible by 400 but not by 125 is still a leap year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'False' but got 'True'",
+            "name": "1800 - year divisible by 200, not divisible by 400 in common year",
+            "status": "fail"
         }
     ],
     "version": 2

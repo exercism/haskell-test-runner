@@ -26,7 +26,7 @@ instance ToJSON TestResultStatus where
 data TestResult = TestResult {
   name :: String,
   status :: TestResultStatus,
-  message :: String
+  message :: Maybe String
 } deriving (Generic, Show)
 
 instance ToJSON TestResult where
@@ -60,19 +60,19 @@ format event = case event of
     handleItemDone (_, requirement) item =
         case itemResult item of
           Success ->
-            addTestResult TestResult { name = requirement, status = Pass, message = "" }
+            addTestResult TestResult { name = requirement, status = Pass, message = Nothing }
           -- NOTE: We don't expect pending tests in Exercism exercises
           Pending _ _ -> return ()
           Failure _ failureReason ->
-            let baseResult = TestResult { name = requirement, status = Fail, message = "" }
+            let baseResult = TestResult { name = requirement, status = Fail, message = Just "" }
                 result = case failureReason of
-                  NoReason -> baseResult
-                  Reason reason -> baseResult { message = reason }
+                  NoReason -> baseResult { message = Just "No reason" }
+                  Reason reason -> baseResult { message = Just reason }
                   ExpectedButGot _ expected got -> 
                     baseResult { 
-                      message = "Expected '" ++ expected ++ "' but got '" ++ got ++ "'"
+                      message = Just $ "Expected '" ++ expected ++ "' but got '" ++ got ++ "'"
                     }
-                  Error _ exception -> baseResult { message = show exception }
+                  Error _ exception -> baseResult { message = Just $ show exception }
             in addTestResult result
       where
         addTestResult tr = atomically $ modifyTVar' results (\r -> r { tests = r.tests <> [tr] })
