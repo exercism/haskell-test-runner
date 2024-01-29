@@ -24,6 +24,10 @@ library:
     - extra
     - safe
     - stm
+    - aeson
+    - aeson-pretty
+    - bytestring
+    - hspec-core
 
 tests:
   test:
