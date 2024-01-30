@@ -63,12 +63,12 @@ popd
 
 # If the results.json file does not exist, it means that the tests failed to run
 # (usually this would be a compiler error)
-if ! [ -f ${results_file} ]; then
+if ! [ -f "${results_file}" ]; then
     # Sanitize the output
     if grep -q "Registering library for " <<< "${test_output}" ; then
-	sanitized_test_output=$(printf "${test_output}" | sed -n -E -e '1,/^Registering library for/!p')
+	sanitized_test_output=$(printf "%s" "${test_output}" | sed -n -E -e '1,/^Registering library for/!p')
     elif grep -q "Building library for " <<< "${test_output}" ; then
-	sanitized_test_output=$(printf "${test_output}" | sed -n -E -e '1,/^Building library for/!p')
+	sanitized_test_output=$(printf "%s" "${test_output}" | sed -n -E -e '1,/^Building library for/!p')
     else
 	sanitized_test_output="${test_output}"
     fi
@@ -77,7 +77,7 @@ if ! [ -f ${results_file} ]; then
     colorized_test_output=$(echo "${sanitized_test_output}" \
 	| GREP_COLOR='01;31' grep --color=always -E -e '.*FAILED \[[0-9]+\]$|$')
 
-    jq -n --arg output "${colorized_test_output}" '{version: 2, status: "error", message: $output}' > ${results_file}
+    jq -n --arg output "${colorized_test_output}" '{version: 2, status: "error", message: $output}' > "${results_file}"
 fi
 
 echo "$file_contents" > "${input_dir}/stack.yaml"

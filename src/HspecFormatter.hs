@@ -16,7 +16,7 @@ import Test.Hspec.Core.Formatters.V2
 import Test.Hspec.Core.Format (Format, FormatConfig, Path, Event(ItemDone, Done), FailureReason(..))
 import GHC.Generics (Generic)
 
-data TestResultStatus = Pass | Fail | Err deriving (Show)
+data TestResultStatus = Pass | Fail | Err deriving (Eq, Show)
 
 instance ToJSON TestResultStatus where
   toJSON Pass = "pass"
@@ -80,7 +80,8 @@ format event = case event of
     handleDone :: IO ()
     handleDone = do
       resultsVal <- readTVarIO results
-      BS.writeFile "results.json" (encodePretty resultsVal)
+      let finalResults = if all (\t -> t.status == Pass) resultsVal.tests then resultsVal { resultsStatus = Pass } else resultsVal
+      BS.writeFile "results.json" (encodePretty finalResults)
       return ()
 
 

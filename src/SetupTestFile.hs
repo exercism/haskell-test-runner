@@ -34,7 +34,7 @@ modifyTests inputDir = do
   -- Add aeson, aeson-pretty, bytestring, hspec-core, stm and text packages to `tests` section of 
   -- package.yaml.
   -- (assumes that the tests.test.dependencies is the last item in package.yaml!)
-  appendFile packageFile "      - aeson\n      - aeson-pretty\n      - bytestring\n      - hspec-core\n      - stm\n      - text"
+  appendFile packageFile "      - aeson\n      - aeson-pretty\n      - bytestring\n      - hspec-core\n      - stm\n      - text\n"
 
   -- Copy our custom hspec formatter into the input code directory so it can be used
   copyFile "src/HspecFormatter.hs" (inputDir ++ "/test/HspecFormatter.hs")
