@@ -27,6 +27,7 @@ slug="$1"
 input_dir="${2%/}"
 output_dir="${3%/}"
 results_file="${output_dir}/results.json"
+setup_tests_executable="bin/setup-tests"
 
 # Create the output directory if it doesn't exist
 mkdir -p "${output_dir}"
@@ -37,10 +38,16 @@ file_contents=$(< "${input_dir}/stack.yaml")
 
 echo "system-ghc: true" >> "${input_dir}/stack.yaml"
 
-# Run our SetupTestFile which does some code injection to modify how the tests
-# will run to use our custom hspec formatter that outputs results.json automatically
-# TODO: see if we can avoid runghc and instead run a precompiled binary
-stack --resolver lts-20.18 runghc src/SetupTestFile.hs $input_dir
+# Run our test setup which does some code injection to modify how the tests
+# will run to use our custom hspec formatter that outputs results.json automatically.
+# We expect the setup-tests executable to be pre-built in Docker, but fallback to using runghc in case it isn't
+# found so that developers can continue to easily run `bin/run.sh` locally.
+if [ -f "${setup_tests_executable}" ]; then
+  ${setup_tests_executable}
+else
+  echo "Did not find bin/setup-tests executable - using stack runghc ./test-setup/src/Main.hs instead"
+  stack --resolver lts-20.18 runghc ./test-setup/src/Main.hs "$input_dir"
+fi
 
 pushd "${input_dir}" > /dev/null
 
@@ -51,7 +58,6 @@ set +e
 # Run the tests for the provided implementation file and redirect stdout and
 # stderr to capture it
 test_output=$(stack build --resolver lts-20.18 --test --allow-different-user 2>&1)
-exit_code=$?
 
 # re-enable original options
 set -$old_opts

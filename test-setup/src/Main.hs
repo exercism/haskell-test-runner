@@ -1,6 +1,6 @@
 {-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-module SetupTestFile (main) where
-import Data.List (intercalate, findIndex, isInfixOf)
+module Main (main) where
+import Data.List (findIndex, isInfixOf)
 import Data.IORef
 import System.Environment (getArgs)
 import Control.Arrow ((>>>))
@@ -13,6 +13,9 @@ main = do
   case args of 
     [] -> return ()
     xs -> modifyTests (head xs)
+
+hspecFormatterPath :: String
+hspecFormatterPath = "pre-compiled/test/HspecFormatter.hs"
 
 modifyTests :: String -> IO ()
 modifyTests inputDir = do
@@ -37,7 +40,7 @@ modifyTests inputDir = do
   appendFile packageFile "      - aeson\n      - aeson-pretty\n      - bytestring\n      - hspec-core\n      - stm\n      - text\n"
 
   -- Copy our custom hspec formatter into the input code directory so it can be used
-  copyFile "src/HspecFormatter.hs" (inputDir ++ "/test/HspecFormatter.hs")
+  copyFile hspecFormatterPath (inputDir ++ "/test/HspecFormatter.hs")
 
   where
     -- Update Test.Hspec.Runner import to add the `configFormat` import that we need

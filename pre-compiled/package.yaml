@@ -24,10 +24,6 @@ library:
     - extra
     - safe
     - stm
-    - aeson
-    - aeson-pretty
-    - bytestring
-    - hspec-core
 
 tests:
   test:
@@ -35,4 +31,9 @@ tests:
     source-dirs: test
     dependencies:
       - leap
+      - aeson
+      - aeson-pretty
+      - bytestring
       - hspec
+      - hspec-core
+      - stm

@@ -1,3 +1,5 @@
+-- NOTE: This file is used by the setup-tests executable (built from the test-setup/ directory).
+-- It's copied into the target project and is configured to be the hspec formatter using code injection.
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE OverloadedRecordDot #-}
 {-# LANGUAGE OverloadedStrings #-}
