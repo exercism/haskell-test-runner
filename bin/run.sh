@@ -61,7 +61,7 @@ rm -rf .stack-work
 
 popd
 
-# If there is no existing results.json file it means that the tests failed to run
+# If the results.json file does not exist, it means that the tests failed to run
 # (usually this would be a compiler error)
 if ! [ -f ${results_file} ]; then
     # Sanitize the output
