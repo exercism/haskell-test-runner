@@ -43,7 +43,7 @@ echo "system-ghc: true" >> "${input_dir}/stack.yaml"
 # We expect the setup-tests executable to be pre-built in Docker, but fallback to using runghc in case it isn't
 # found so that developers can continue to easily run `bin/run.sh` locally.
 if [ -f "${setup_tests_executable}" ]; then
-  ${setup_tests_executable}
+  ${setup_tests_executable} "${input_dir}"
 else
   echo "Did not find bin/setup-tests executable - using stack runghc ./test-setup/src/Main.hs instead"
   stack --resolver lts-20.18 runghc ./test-setup/src/Main.hs "$input_dir"

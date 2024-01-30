@@ -11,7 +11,7 @@ main :: IO ()
 main = do
   args <- getArgs
   case args of 
-    [] -> return ()
+    [] -> error "setup-tests expects one argument - the project directory whose code should be modified"
     xs -> modifyTests (head xs)
 
 hspecFormatterPath :: String
