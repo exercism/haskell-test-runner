@@ -58,6 +58,7 @@ set +e
 # Run the tests for the provided implementation file and redirect stdout and
 # stderr to capture it
 test_output=$(stack build --resolver lts-20.18 --test --allow-different-user 2>&1)
+cp "${input_dir}/results.json" "${results_file}"
 
 # re-enable original options
 set -$old_opts
