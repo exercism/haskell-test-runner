@@ -34,7 +34,9 @@ mkdir -p "${output_dir}"
 
 echo "${slug}: testing..."
 
-file_contents=$(< "${input_dir}/stack.yaml")
+stack_yml_file_contents=$(< "${input_dir}/stack.yaml")
+package_yml_file_contents=$(< "${input_dir}/package.yaml")
+tests_file_contents=$(< "${input_dir}/test/Tests.hs")
 
 echo "system-ghc: true" >> "${input_dir}/stack.yaml"
 
@@ -58,7 +60,12 @@ set +e
 # Run the tests for the provided implementation file and redirect stdout and
 # stderr to capture it
 test_output=$(stack build --resolver lts-20.18 --test --allow-different-user 2>&1)
-cp "${input_dir}/results.json" "${results_file}"
+
+# Copy results.json to the output directory (only if output directory is different from
+# the input directory)
+if [ "${input_dir}/results.json" != "${results_file}" ]; then
+  mv "${input_dir}/results.json" "${results_file}"
+fi
 
 # re-enable original options
 set -$old_opts
@@ -87,6 +94,10 @@ if ! [ -f "${results_file}" ]; then
     jq -n --arg output "${colorized_test_output}" '{version: 2, status: "error", message: $output}' > "${results_file}"
 fi
 
-echo "$file_contents" > "${input_dir}/stack.yaml"
+# Revert input directory code to it's initial state
+echo "$stack_yml_file_contents" > "${input_dir}/stack.yaml"
+echo "$package_yml_file_contents" > "${input_dir}/package.yaml"
+echo "$tests_file_contents" > "${input_dir}/test/Tests.hs"
+rm -f "${input_dir}/test/HspecFormatter.hs"
 
 echo "${slug}: done"

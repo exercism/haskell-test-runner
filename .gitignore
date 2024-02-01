@@ -3,3 +3,4 @@ results.json
 .stack-work
 stack.yaml.lock
 bin/setup-tests
+tests/**/HspecFormatter.hs

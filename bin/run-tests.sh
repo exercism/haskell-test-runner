@@ -51,6 +51,4 @@ for test_dir in tests/*; do
     set -$old_opts
 done
 
-bin/cleanup-code-injections.sh
-
 exit ${exit_code}
