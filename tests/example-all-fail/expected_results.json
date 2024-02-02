@@ -1,5 +1,52 @@
 {
-  "version": 1,
-  "status": "fail",
-  "message": "leap> test (suite: test)\n\n\nisLeapYear\n  2015 - year not divisible by 4 in common year [✘]\n\nFailures:\n\n  test/Tests.hs:20:55: \n  1) isLeapYear 2015 - year not divisible by 4 in common year\n       expected: False\n        but got: True\n\n  To rerun use: --match \"/isLeapYear/2015 - year not divisible by 4 in common year/\"\n\n\n1 example, 1 failure\n\nleap> Test suite test failed\n\nError: [S-7282]\n       Stack failed to execute the build plan.\n       \n       While executing the build plan, Stack encountered the following errors:\n       \n       TestSuiteFailure (PackageIdentifier {pkgName = PackageName \"leap\", pkgVersion = mkVersion [1,6,0,10]}) (fromList [(\"test\",Just (ExitFailure 1))]) Nothing \"\""
+    "message": null,
+    "status": "fail",
+    "tests": [
+        {
+            "message": "Expected 'False' but got 'True'",
+            "name": "2015 - year not divisible by 4 in common year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'False' but got 'True'",
+            "name": "1970 - year divisible by 2, not divisible by 4 in common year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'True' but got 'False'",
+            "name": "1996 - year divisible by 4, not divisible by 100 in leap year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'True' but got 'False'",
+            "name": "1960 - year divisible by 4 and 5 is still a leap year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'False' but got 'True'",
+            "name": "2100 - year divisible by 100, not divisible by 400 in common year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'False' but got 'True'",
+            "name": "1900 - year divisible by 100 but not by 3 is still not a leap year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'True' but got 'False'",
+            "name": "2000 - year divisible by 400 in leap year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'True' but got 'False'",
+            "name": "2400 - year divisible by 400 but not by 125 is still a leap year",
+            "status": "fail"
+        },
+        {
+            "message": "Expected 'False' but got 'True'",
+            "name": "1800 - year divisible by 200, not divisible by 400 in common year",
+            "status": "fail"
+        }
+    ],
+    "version": 2
 }

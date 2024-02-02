@@ -21,7 +21,7 @@ for test_dir in tests/*; do
     test_dir_path=$(realpath "${test_dir}")
     results_file_path="${test_dir_path}/results.json"
     expected_results_file_path="${test_dir_path}/expected_results.json"
-    stack_root=$(stack path --stack-root)
+    stack_root=$(stack --resolver lts-20.18 path --stack-root)
 
     bin/run.sh "${test_dir_name}" "${test_dir_path}" "${test_dir_path}"
 

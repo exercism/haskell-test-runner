@@ -31,4 +31,9 @@ tests:
     source-dirs: test
     dependencies:
       - leap
+      - aeson
+      - aeson-pretty
+      - bytestring
       - hspec
+      - hspec-core
+      - stm

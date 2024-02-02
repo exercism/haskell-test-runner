@@ -14,5 +14,8 @@ COPY pre-compiled/ .
 RUN stack build --resolver lts-20.18 --no-terminal --test --no-run-tests
 
 COPY . .
+
+RUN cd ./test-setup/ && stack build setup-tests --copy-bins --local-bin-path /opt/test-runner/bin/ && cd ..
+
 ENTRYPOINT ["/opt/test-runner/bin/run.sh"]
 
