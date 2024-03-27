@@ -4,10 +4,11 @@ version: 1.6.0.10
 dependencies:
   - base
 
+ghc-options: -Wall
+
 library:
   exposed-modules: LeapYear
   source-dirs: src
-  ghc-options: -Wall
   dependencies:
     - QuickCheck
     - lens
@@ -30,10 +31,14 @@ tests:
     main: Tests.hs
     source-dirs: test
     dependencies:
-      - leap
       - aeson
       - aeson-pretty
       - bytestring
+      - containers
+      - directory
+      - filepath
       - hspec
       - hspec-core
+      - leap
       - stm
+      - text

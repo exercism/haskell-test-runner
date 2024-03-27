@@ -4,3 +4,4 @@ results.json
 stack.yaml.lock
 bin/setup-tests
 tests/**/HspecFormatter.hs
+**/dist-newstyle/

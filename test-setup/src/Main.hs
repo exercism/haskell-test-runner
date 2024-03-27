@@ -6,6 +6,7 @@ import System.Environment (getArgs)
 import Control.Arrow ((>>>))
 import Control.Monad (when)
 import System.Directory (copyFile)
+import Data.Foldable (traverse_)
 
 main :: IO ()
 main = do
@@ -14,8 +15,9 @@ main = do
     [] -> error "setup-tests expects one argument - the project directory whose code should be modified"
     xs -> modifyTests (head xs)
 
-hspecFormatterPath :: String
-hspecFormatterPath = "pre-compiled/test/HspecFormatter.hs"
+(|>) :: a -> b -> (a, b)
+(|>) = (,)
+infixl 4 |>
 
 modifyTests :: String -> IO ()
 modifyTests inputDir = do
@@ -37,10 +39,21 @@ modifyTests inputDir = do
   -- Add aeson, aeson-pretty, bytestring, hspec-core, stm and text packages to `tests` section of 
   -- package.yaml.
   -- (assumes that the tests.test.dependencies is the last item in package.yaml!)
-  appendFile packageFile "      - aeson\n      - aeson-pretty\n      - bytestring\n      - hspec-core\n      - stm\n      - text\n"
-
+  appendFile packageFile $ unlines
+    [ "      - aeson"
+    , "      - aeson-pretty"
+    , "      - bytestring"
+    , "      - hspec-core"
+    , "      - stm"
+    , "      - text"
+    , "      - containers"
+    , "      - directory"
+    , "      - filepath"
+    ]
   -- Copy our custom hspec formatter into the input code directory so it can be used
-  copyFile hspecFormatterPath (inputDir ++ "/test/HspecFormatter.hs")
+  traverse_ (uncurry copyFile)
+    [ "pre-compiled/test/HspecFormatter.hs" |> inputDir ++ "/test/HspecFormatter.hs"
+    , "pre-compiled/test/Manifest.hs"       |> inputDir ++ "/test/Manifest.hs" ]
 
   where
     -- Update Test.Hspec.Runner import to add the `configFormat` import that we need

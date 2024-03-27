@@ -98,6 +98,6 @@ fi
 echo "$stack_yml_file_contents" > "${input_dir}/stack.yaml"
 echo "$package_yml_file_contents" > "${input_dir}/package.yaml"
 echo "$tests_file_contents" > "${input_dir}/test/Tests.hs"
-rm -f "${input_dir}/test/HspecFormatter.hs"
+rm -f "${input_dir}"/test/{HspecFormatter,Manifest}.hs
 
 echo "${slug}: done"
