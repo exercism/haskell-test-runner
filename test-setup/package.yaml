@@ -10,4 +10,8 @@ executables:
     source-dirs: src
     ghc-options: -Wall
     dependencies:
+      - aeson
       - directory
+      - lens
+      - lens-aeson
+      - yaml
