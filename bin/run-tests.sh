@@ -15,40 +15,36 @@ set -euo pipefail
 
 exit_code=0
 
+# Delete existing results files
+find tests -name results.json -delete
 # Iterate over all test directories
 for test_dir in tests/*; do
     test_dir_name=$(basename "${test_dir}")
     test_dir_path=$(realpath "${test_dir}")
     results_file_path="${test_dir_path}/results.json"
     expected_results_file_path="${test_dir_path}/expected_results.json"
-    stack_root=$(stack --resolver lts-20.18 path --stack-root)
+    stack_root=$(stack --resolver lts-24.39 path --stack-root)
 
     bin/run.sh "${test_dir_name}" "${test_dir_path}" "${test_dir_path}"
 
-    # Normalize the results file
-    sed -i -E \
-      -e 's/Randomized with seed [0-9]+\\n//' \
-      -e 's/Finished in [0-9]+\.[0-9]+ seconds\\n//' \
-      -e 's/Completed [0-9]+ action\(s\).\\n//' \
-      -e "s~${test_dir_path}~/solution~g" \
-      -e 's/--builddir[^ ]+ //' \
-      -e "s~${stack_root}/[^ ]+ ~~g" \
-      "${results_file_path}"
-
-    # disable -e since we want all diffs even if one has unexpected
-    # results
-    old_opts=$-
-    set +e
-
-    echo "${test_dir_name}: comparing results.json to expected_results.json"
-    diff "${results_file_path}" "${expected_results_file_path}"
-
-    if [ $? -ne 0 ]; then
-        exit_code=1
+    # Normalize the message in the results file
+    if jq -e '.message != null' "${results_file_path}" > /dev/null; then
+        message=$(
+            jq -r .message "${results_file_path}" \
+            | sed "
+                1,1 {
+                    s@${test_dir_path}@/solution@
+                    s/error: .*/error/
+                }
+                s@/opt/test-runner/.*ghc-9.10.3 @@"
+        )
+        jq --arg m "${message}" '.message = $m' "${results_file_path}" > "${results_file_path}.updated"
+        mv "${results_file_path}.updated" "${results_file_path}"
     fi
 
-    # re-enable original options
-    set -$old_opts
+    # Compare results
+    echo "${test_dir_name}: comparing results.json to expected_results.json"
+    diff "${results_file_path}" "${expected_results_file_path}" || exit_code=1
 done
 
-exit ${exit_code}
+exit "${exit_code}"

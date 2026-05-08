@@ -1,9 +1,9 @@
-.git/
-.github/
-.stack-work/
-tests/
 .appends
-.gitignore
-.gitattributes
 .dockerignore
+.git/
+.gitattributes
+.github/
+.gitignore
+.stack-work/
 Dockerfile
+tests/
