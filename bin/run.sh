@@ -15,7 +15,7 @@
 # Example:
 # ./bin/run.sh two-fer /absolute/path/to/two-fer/solution/folder/ /absolute/path/to/output/directory/
 
-resolver=lts-24.39
+resolver=lts-22.44
 
 set -euo pipefail
 

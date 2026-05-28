@@ -23,7 +23,7 @@ for test_dir in tests/*; do
     test_dir_path=$(realpath "${test_dir}")
     results_file_path="${test_dir_path}/results.json"
     expected_results_file_path="${test_dir_path}/expected_results.json"
-    stack_root=$(stack --resolver lts-24.39 path --stack-root)
+    stack_root=$(stack --resolver lts-22.44 path --stack-root)
 
     bin/run.sh "${test_dir_name}" "${test_dir_path}" "${test_dir_path}"
 
@@ -32,11 +32,12 @@ for test_dir in tests/*; do
         message=$(
             jq -r .message "${results_file_path}" \
             | sed "
-                1,1 {
+		1d
+                2 {
                     s@${test_dir_path}@/solution@
                     s/error: .*/error/
                 }
-                s@/opt/test-runner/.*ghc-9.10.3 @@"
+                s@/opt/test-runner/.*ghc-9.6.7 @@"
         )
         jq --arg m "${message}" '.message = $m' "${results_file_path}" > "${results_file_path}.updated"
         mv "${results_file_path}.updated" "${results_file_path}"
