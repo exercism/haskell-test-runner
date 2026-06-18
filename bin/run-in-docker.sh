@@ -33,17 +33,15 @@ mkdir -p "${output_dir}"
 # Build the Docker image
 docker build --rm -t exercism/haskell-test-runner .
 
-# Run the Docker image using the settings mimicking the production environment
-# `run.sh` needs to modify/set up the source directory.
-# * Modify the /solution directly then restore state, which is a bit messy and resets write timestamps.
-# * Copy /solution to /tmp and run the solution from a tmpdir.
-#   * A `test` executable is written inside the solution dir. If we use a tmpfs, Docker mounts it with noexec.
-#   * We can skip a tmpfs and use /tmp, but then we cannot use --readonly.
-# * Copy /solution to /tmp, modify /solution then restore from the backup in /tmp.
+# Run the Docker image using the settings mimicking the production environment.
+# `run.sh` modifies the solution files then generates and runs an executable.
+# This requires a temp location (to avoid dirtying host files) with exec settings (to run it).
+# type=tmpfs gives us a mount with noexec set.
+# type=volume gives us an anonymous volume; --rm cleans it up later.
 docker run \
     --rm \
     --network none \
     --mount type=bind,src="${input_dir}",dst=/solution \
     --mount type=bind,src="${output_dir}",dst=/output \
-    --mount type=tmpfs,dst=/tmp \
+    --mount type=volume,dst=/tmp \
     exercism/haskell-test-runner "${slug}" /solution /output 
