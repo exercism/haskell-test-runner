@@ -17,8 +17,10 @@ WORKDIR /opt/test-runner/
 COPY pre-compiled/ .
 RUN stack build --resolver lts-22.44 --no-terminal --test --no-run-tests
 
+COPY ./test-setup/ /opt/test-runner/test-setup/
+RUN mkdir /opt/test-runner/bin/ && cd /opt/test-runner/test-setup/ && stack build setup-tests --copy-bins --local-bin-path /opt/test-runner/bin/
+
 COPY . .
-RUN cd ./test-setup/ && stack build setup-tests --copy-bins --local-bin-path /opt/test-runner/bin/
 
 # The base image ships GHC 9.10.3, but lts-22.44 needs GHC 9.6.7, so stack
 # installed its own copy under STACK_ROOT/programs. That stack-managed GHC is

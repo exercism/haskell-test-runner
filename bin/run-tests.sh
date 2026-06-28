@@ -34,7 +34,7 @@ for test_dir in tests/*; do
             | sed "
 		1d
                 2 {
-                    s@${test_dir_path}@/solution@
+                    s@/tmp/.*/${test_dir_name}/@/solution/@
                     s/error: .*/error/
                 }
                 s@/opt/test-runner/.*ghc-9.6.7 @@"
