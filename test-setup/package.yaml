@@ -15,3 +15,11 @@ executables:
       - lens
       - lens-aeson
       - yaml
+
+  # Prints the unit id Cabal gives a package's library, for bin/fast-run.sh.
+  cabal-unit-id:
+    main: CabalUnitId.hs
+    source-dirs: unit-id
+    ghc-options: -Wall
+    dependencies:
+      - Cabal
