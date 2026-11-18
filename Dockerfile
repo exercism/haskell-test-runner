@@ -22,6 +22,19 @@ RUN mkdir /opt/test-runner/bin/ && cd /opt/test-runner/test-setup/ && stack buil
 
 COPY . .
 
+# bin/fast-run.sh calls this GHC directly against this snapshot database. It
+# also needs the unit id of every package in the global and snapshot
+# databases, listed one per line as "name unit-id".
+RUN set -eux; \
+    ghc=$(stack path --resolver lts-22.44 --compiler-exe); \
+    ghc_pkg=$(dirname "${ghc}")/ghc-pkg; \
+    snapshot_db=$(stack path --resolver lts-22.44 --snapshot-pkg-db); \
+    printf 'GHC=%s\nGHC_PKG=%s\nSNAPSHOT_DB=%s\n' "${ghc}" "${ghc_pkg}" "${snapshot_db}" > /opt/test-runner/fast-run.env; \
+    mkdir -p /opt/test-runner/fast-run; \
+    "${ghc_pkg}" --global --package-db "${snapshot_db}" list --simple-output --show-unit-ids \
+        | tr ' ' '\n' | sed -E 's/^(.*)-([0-9][0-9.]*)(-[A-Za-z0-9]+)?$/\1 &/' | sort > /opt/test-runner/fast-run/units.txt; \
+    test -z "$(cut -d' ' -f1 /opt/test-runner/fast-run/units.txt | uniq -d)"
+
 # The base image ships GHC 9.10.3, but lts-22.44 needs GHC 9.6.7, so stack
 # installed its own copy under STACK_ROOT/programs. That stack-managed GHC is
 # the only one the runner uses, and it is the only thing copied into the final
@@ -49,9 +62,11 @@ FROM debian:trixie-slim@sha256:a29215f6a35e51e22adffa17f89e9d2ef06214e64a2bad10d
 #   libnuma-dev              - the GHC RTS links -lnuma
 #   libtinfo6                - the ghc-tinfo6 build loads libtinfo.so.6
 #   jq                       - run.sh assembles results.json with it
+#   mold                     - bin/fast-run.sh links the tests with it, in
+#                              about a third of the time ld.gold takes
 RUN apt-get update \
     && apt-get install --yes --no-install-recommends \
-        gcc binutils binutils-gold libc6-dev libgmp-dev libffi-dev libnuma-dev libtinfo6 jq \
+        gcc binutils binutils-gold libc6-dev libgmp-dev libffi-dev libnuma-dev libtinfo6 jq mold \
     && rm -rf /var/lib/apt/lists/*
 
 # Set up the environment
@@ -65,5 +80,16 @@ COPY --from=builder /usr/local/bin/stack /usr/local/bin/stack
 COPY --from=builder /opt/test-runner /opt/test-runner
 
 WORKDIR /opt/test-runner
+
+# Run the fast path once on the pre-compiled leap project, and keep the
+# compiled HspecFormatter, so that no run has to compile it again. The build
+# fails if the fast path doesn't work.
+RUN set -eux; \
+    mkdir /tmp/precompile; \
+    cp -R pre-compiled /tmp/precompile/leap; \
+    FAST_RUN_SAVE_FORMATTER=1 bin/run.sh leap /tmp/precompile/leap /tmp/precompile/out; \
+    jq -e '.tests | length > 0' /tmp/precompile/out/results.json; \
+    test -f /opt/test-runner/fast-run/HspecFormatter.hi; \
+    rm -rf /tmp/precompile
 
 ENTRYPOINT ["/opt/test-runner/bin/run.sh"]

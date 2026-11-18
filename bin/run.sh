@@ -51,7 +51,7 @@ echo "${slug}: testing..."
 # We expect the setup-tests executable to be pre-built in Docker, but fallback to using runghc in case it isn't
 # found so that developers can continue to easily run `bin/run.sh` locally.
 if [[ -x "${setup_tests_executable}" ]]; then
-    "${setup_tests_executable}" "${solution}"
+    "${setup_tests_executable}" "${solution}" "${tmp}/package.json"
 else
     echo "Did not find bin/setup-tests executable - using stack runghc ./test-setup/src/Main.hs instead"
     stack --resolver "${resolver}" runghc ./test-setup/src/Main.hs "${solution}"
@@ -59,10 +59,20 @@ fi
 
 cd "${solution}"
 
-# Run the tests for the provided implementation file and redirect stdout and
-# stderr to capture it.
-# Use cmd || true to avoid exiting if tests fail (set -e).
-test_output=$(stack build --resolver "${resolver}" --test --allow-different-user 2>&1) || true
+# Try the fast path first: build and run the tests with GHC directly (see
+# bin/fast-run.sh). If it can't produce results.json, use stack as before, so
+# that compile errors and anything unusual give the same output as always.
+if [[ -f "${tmp}/package.json" && -f /opt/test-runner/fast-run.env ]] \
+    && /opt/test-runner/bin/fast-run.sh "${solution}" "${tmp}/package.json"; then
+    test_output=""
+else
+    rm -f "${solution}/results.json"
+
+    # Run the tests for the provided implementation file and redirect stdout and
+    # stderr to capture it.
+    # Use cmd || true to avoid exiting if tests fail (set -e).
+    test_output=$(stack build --resolver "${resolver}" --test --allow-different-user 2>&1) || true
+fi
 
 # Copy results.json to the output directory.
 # This file may not exist if the test failed to run, eg on a compiler error.

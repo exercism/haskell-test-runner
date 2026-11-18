@@ -13,19 +13,23 @@ import Data.Aeson.Lens (key, _Array)
 import Control.Lens ((%~))
 import Data.Yaml ( decodeFileThrow, encodeFile )
 import qualified Data.Yaml as Yaml
+import qualified Data.Aeson as Aeson
 
 main :: IO ()
 main = do
   args <- getArgs
   case args of 
     [] -> error "setup-tests expects one argument - the project directory whose code should be modified"
-    xs -> modifyTests (head xs)
+    [inputDir] -> modifyTests inputDir Nothing
+    (inputDir : jsonFile : _) -> modifyTests inputDir (Just jsonFile)
 
 hspecFormatterPath :: String
 hspecFormatterPath = "pre-compiled/test/HspecFormatter.hs"
 
-modifyTests :: String -> IO ()
-modifyTests inputDir = do
+-- If a second path is given, the modified package.yaml is also written there
+-- as JSON, so that bin/fast-run.sh can read it with jq.
+modifyTests :: String -> Maybe String -> IO ()
+modifyTests inputDir jsonFile = do
   let testFile = inputDir ++ "/test/Tests.hs"
       packageFile = inputDir ++ "/package.yaml"
 
@@ -46,6 +50,7 @@ modifyTests inputDir = do
       addDepependencies = key "tests" . key "test" . key "dependencies" . _Array %~ (<> missingDependencies)
   originalYaml <- decodeFileThrow packageFile :: IO Yaml.Value
   encodeFile packageFile (addDepependencies originalYaml)
+  mapM_ (`Aeson.encodeFile` addDepependencies originalYaml) jsonFile
 
   -- Copy our custom hspec formatter into the input code directory so it can be used
   copyFile hspecFormatterPath (inputDir ++ "/test/HspecFormatter.hs")
